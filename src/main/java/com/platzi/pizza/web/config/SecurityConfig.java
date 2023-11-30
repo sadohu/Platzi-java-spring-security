@@ -33,10 +33,35 @@ public class SecurityConfig {
                 // Permitir peticiones GET a /api/* (Primer nivel) o /api/** (Cualquier
                 // subruta):
                 // .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/pizzas/**").permitAll()
+                // .requestMatchers(HttpMethod.GET, "/api/pizzas/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/pizzas/**").hasAnyRole("ADMIN", "CUSTOMER")
+
+                /*
+                 * ROLES: Establecer reglas para cada rol
+                 * Para este caso establecemos que solo el Administrador puede solicitar
+                 * peticiones POST
+                 * y editamos las peticiones GET para ciertos roles: (lineas arriba)
+                 * Reemplazamos:
+                 * .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                 * Por:
+                 * .requestMatchers(HttpMethod.GET, "/api/pizzas/**").hasAnyRole("ADMIN",
+                 * "CUSTOMER")
+                 *
+                 * Perzonalizaremos de la misma manera los métodos POST y PUT
+                 * u otros paths que requieran de un rol especifico
+                 */
+                .requestMatchers(HttpMethod.POST, "/api/pizzas/**").hasRole("ADMIN")
 
                 // Denegar peticiones PUT a todo el proyecto:
-                .requestMatchers(HttpMethod.PUT).denyAll()
+                // .requestMatchers(HttpMethod.PUT).denyAll()
+                .requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
+
+                /*
+                 * ROLES
+                 * Para este caso establecemos que solo el Administrador
+                 * puede solicitar peticiones (GET, POST, PUT, DELETE) a /api/orders/**
+                 */
+                .requestMatchers("/api/orders/**").hasRole("ADMIN")
 
                 // Cualquier peticiones:
                 .anyRequest()
@@ -74,7 +99,18 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(admin);
+        /*
+         * Para el manejo de roles, creamos un usuario de tipo CUSTOMER,
+         * y luego personalizaremos el filterChain para que cada rol tenga sus propias
+         * reglas
+         */
+        UserDetails customer = User.builder()
+                .username("customer")
+                .password(passwordEncoder().encode("customer123"))
+                .roles("CUSTOMER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, customer);
     }
 
     @Bean
