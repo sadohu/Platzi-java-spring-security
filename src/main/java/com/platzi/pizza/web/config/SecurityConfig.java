@@ -79,39 +79,39 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 
-    @Bean
-    public UserDetailsService memoryUsers() {
-        /**
-         * Crear un usuario en memoria, con sus propias credenciales
-         * De esta manera sustituimos el usuario por defecto de Spring Security
-         * Por ultimo, Sring Security no generará una contraseña aleatoria.
-         */
+    // @Bean
+    // public UserDetailsService memoryUsers() {
+    // /**
+    // * Crear un usuario en memoria, con sus propias credenciales
+    // * De esta manera sustituimos el usuario por defecto de Spring Security
+    // * Por ultimo, Sring Security no generará una contraseña aleatoria.
+    // */
 
-        UserDetails admin = User.builder()
-                .username("admin")
-                /**
-                 * .password("admin")
-                 * No se recomienda guardar la contraseña en texto plano
-                 * Por lo que se debe encriptar
-                 */
+    // UserDetails admin = User.builder()
+    // .username("admin")
+    // /**
+    // * .password("admin")
+    // * No se recomienda guardar la contraseña en texto plano
+    // * Por lo que se debe encriptar
+    // */
 
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
-                .build();
+    // .password(passwordEncoder().encode("admin"))
+    // .roles("ADMIN")
+    // .build();
 
-        /*
-         * Para el manejo de roles, creamos un usuario de tipo CUSTOMER,
-         * y luego personalizaremos el filterChain para que cada rol tenga sus propias
-         * reglas
-         */
-        UserDetails customer = User.builder()
-                .username("customer")
-                .password(passwordEncoder().encode("customer123"))
-                .roles("CUSTOMER")
-                .build();
+    // /*
+    // * Para el manejo de roles, creamos un usuario de tipo CUSTOMER,
+    // * y luego personalizaremos el filterChain para que cada rol tenga sus propias
+    // * reglas
+    // */
+    // UserDetails customer = User.builder()
+    // .username("customer")
+    // .password(passwordEncoder().encode("customer123"))
+    // .roles("CUSTOMER")
+    // .build();
 
-        return new InMemoryUserDetailsManager(admin, customer);
-    }
+    // return new InMemoryUserDetailsManager(admin, customer);
+    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
