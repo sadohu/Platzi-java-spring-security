@@ -15,6 +15,9 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity
+                // Deshabilitar CORS:
+                .cors().and()
+
                 // Autorizar todas las peticiones:
                 .authorizeRequests()
 
