@@ -9,15 +9,16 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   pizzas: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    const requestOptions = {                                                                                                                                                                                 
+    const requestOptions = {
+
       headers: new HttpHeaders({
-        'Authorization': 'Basic dXNlcjo4MzRlZDUxZS00NGQ2LTQ4MzctYWYwYi04ODQ3MzU4Y2M3ZWI='
-      }), 
+        'Authorization': 'Basic dXNlcjpkNWExNGQ0NC0wN2VjLTQ4NDItOTI1MC02MmI2ODE0Njk1NWY='
+      }),
     };
-    
+
     this.http.get('http://localhost:8080/api/pizzas/available', requestOptions).subscribe(response => {
       this.pizzas = response;
     });

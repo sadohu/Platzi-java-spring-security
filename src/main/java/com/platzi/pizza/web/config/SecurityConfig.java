@@ -57,6 +57,19 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
 
                 /*
+                 * AUTHORITY
+                 * Los authority son permisos que se pueden asignar a un usuario o grupo de
+                 * usuarios,
+                 * dependiendo de la Lógica en la implementación de UserDetailsService,
+                 * Para el ejemplo: Todos los usuarios tienes el permiso de ver una orden
+                 * aleatoria,
+                 * Sin embargo, solo el administrador puede ver todos los enpoints de ordenes.
+                 * Por ultimo, IMPORTANTE, los authority se deben definir antes que los roles,
+                 * ya que el SecurityFilterChain se ejecuta en orden escalonada.
+                 */
+                .requestMatchers("/api/orders/random").hasAuthority("random_order")
+
+                /*
                  * ROLES
                  * Para este caso establecemos que solo el Administrador
                  * puede solicitar peticiones (GET, POST, PUT, DELETE) a /api/orders/**
