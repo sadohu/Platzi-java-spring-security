@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,10 +16,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
+@AllArgsConstructor
 public class SecurityConfig {
+
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -30,6 +38,9 @@ public class SecurityConfig {
                 .csrf().disable()
                 // Deshabilitar CORS:
                 .cors().and()
+
+                // Deshabilitar el manejo de sesiones:
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
                 // Autorizar todas las peticiones:
                 .authorizeRequests()
@@ -95,7 +106,12 @@ public class SecurityConfig {
                 .and()
 
                 // Se requiere autenticación básica:
-                .httpBasic();
+                // .httpBasic()
+
+                // Reemplazamos la autenticación básica por JWT
+                // por lo que se debe eliminar la autenticación básica
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return httpSecurity.build();
     }
 
