@@ -23,4 +23,26 @@ public class JwtUtil {
                         TimeUnit.DAYS.toMillis(15))) // Fecha de expiración (15 días)
                 .sign(ALGORITHM); // Firma el token con el algoritmo creado en la parte superior
     }
+
+    // Método para verificar el token
+    public boolean verify(String token) {
+        try {
+            JWT.require(ALGORITHM) // Requerir el algoritmo para verificar el token
+                    /* .withIssuer("platzi-pizza") // Quien creo el token */
+                    .build() // Construir el token
+                    .verify(token); // Verificar el token
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Método para obtener el usuario del token
+    public String getUsername(String token) {
+        return JWT.require(ALGORITHM) // Requerir el algoritmo para verificar el token
+                /* .withIssuer("platzi-pizza") // Quien creo el token */
+                .build() // Construir el token
+                .verify(token) // Verificar el token
+                .getSubject(); // Obtener el asunto del token
+    }
 }
